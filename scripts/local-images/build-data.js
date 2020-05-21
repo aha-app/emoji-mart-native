@@ -1,7 +1,7 @@
 const build = require('./build')
-const sets = ['apple', 'facebook', 'google', 'messenger', 'twitter']
+const sets = ['apple', 'facebook', 'google', 'twitter']
 
-build({ output: 'data/local-images/all.js' })
+build({output: 'data/local-images/all.js'})
 
 sets.forEach((set) => {
   build({

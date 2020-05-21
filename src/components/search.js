@@ -15,8 +15,10 @@ import Skins from './skins'
 import SkinsEmoji from './skins-emoji'
 import Touchable from './common/touchable'
 
-const arrowBackIcon = require('../assets/arrow-back.png')
-const clearIcon = require('../assets/clear-icon.png')
+const arrowBackIconLight = require('../assets/arrow-back.png')
+const arrowBackIconDark = require('../assets/arrow-back-dark.png')
+const clearIconLight = require('../assets/clear-icon.png')
+const clearIconDark = require('../assets/clear-icon-dark.png')
 
 const styles = StyleSheet.create({
   searchContainer: {
@@ -28,12 +30,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#eceff1',
     borderBottomWidth: 1,
+  },
+  searchContainerLight: {
+    backgroundColor: '#eceff1',
     borderBottomColor: '#e0e0e0',
+  },
+  searchContainerDark: {
+    backgroundColor: '#13100e',
+    borderBottomColor: '#1f1f1f',
   },
   searchInput: {
     flex: 1,
+  },
+  searchInputLight: {
+    color: '#414141',
+  },
+  searchInputDark: {
+    color: '#bebebe',
   },
   closeButtonContainer: {
     width: 44,
@@ -57,7 +71,7 @@ const styles = StyleSheet.create({
 })
 
 export default class Search extends React.PureComponent {
-  static propTypes = {
+  static propTypes /* remove-proptypes */ = {
     onSearch: PropTypes.func,
     onPressClose: PropTypes.func,
     maxResults: PropTypes.number,
@@ -66,6 +80,7 @@ export default class Search extends React.PureComponent {
     showSkinTones: PropTypes.bool,
     skinsProps: PropTypes.object.isRequired,
     emojiProps: PropTypes.object.isRequired,
+    theme: PropTypes.oneOf(['light', 'dark']),
   }
 
   static defaultProps = {
@@ -75,20 +90,20 @@ export default class Search extends React.PureComponent {
     emojisToShowFilter: null,
     autoFocus: false,
     showSkinTones: true,
+    theme: 'light',
   }
 
   constructor(props) {
     super(props)
+    this.state = {
+      searchTerm: '',
+    }
 
     this.data = props.data
     this.emojiIndex = new NimbleEmojiIndex(this.data)
     this.setRef = this.setRef.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.pressCancel = this.pressCancel.bind(this)
-
-    this.state = {
-      searchTerm: '',
-    }
   }
 
   handleChange(value) {
@@ -123,7 +138,7 @@ export default class Search extends React.PureComponent {
   }
 
   render() {
-    var {
+    const {
       i18n,
       autoFocus,
       onPressClose,
@@ -131,8 +146,9 @@ export default class Search extends React.PureComponent {
       showSkinTones,
       showCloseButton,
       emojiProps,
+      theme,
     } = this.props
-    var { searchTerm } = this.state
+    const {searchTerm} = this.state
 
     let background
 
@@ -152,6 +168,9 @@ export default class Search extends React.PureComponent {
       <View
         style={[
           styles.searchContainer,
+          theme === 'light'
+            ? styles.searchContainerLight
+            : styles.searchContainerDark,
           showCloseButton ? searchContainerWithCloseButtonStyle : null,
         ]}
       >
@@ -162,12 +181,23 @@ export default class Search extends React.PureComponent {
               background={Platform.OS === 'android' ? background : null}
               style={[styles.closeButton]}
             >
-              <Image style={styles.closeButtonIcon} source={arrowBackIcon} />
+              <Image
+                style={styles.closeButtonIcon}
+                source={
+                  theme === 'light' ? arrowBackIconLight : arrowBackIconDark
+                }
+              />
             </Touchable>
           </View>
         ) : null}
         <TextInput
-          style={styles.searchInput}
+          style={[
+            styles.searchInput,
+            theme === 'light'
+              ? styles.searchInputLight
+              : styles.searchInputDark,
+          ]}
+          placeholderTextColor={theme === 'light' ? '#878787' : '#787878'}
           ref={this.setRef}
           value={searchTerm}
           onChangeText={this.handleChange}
@@ -182,7 +212,10 @@ export default class Search extends React.PureComponent {
               background={Platform.OS === 'android' ? background : null}
               style={[styles.closeButton]}
             >
-              <Image style={styles.closeButtonIcon} source={clearIcon} />
+              <Image
+                style={styles.closeButtonIcon}
+                source={theme === 'light' ? clearIconLight : clearIconDark}
+              />
             </Touchable>
           </View>
         ) : null}
@@ -195,7 +228,7 @@ export default class Search extends React.PureComponent {
                 {...skinsProps}
               />
             ) : (
-              <Skins {...skinsProps} />
+              <Skins theme={theme} {...skinsProps} />
             )}
           </View>
         )}

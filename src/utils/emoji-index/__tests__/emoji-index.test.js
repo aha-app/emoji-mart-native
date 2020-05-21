@@ -20,12 +20,12 @@ test('should filter only emojis we care about, exclude pineapple', () => {
     data.unified !== '1F34D'
   }
   expect(
-    emojiIndex.search('apple', { emojisToShowFilter }).map((obj) => obj.id),
+    emojiIndex.search('apple', {emojisToShowFilter}).map((obj) => obj.id),
   ).not.toContain('pineapple')
 })
 
 test('can include/exclude categories', () => {
-  expect(emojiIndex.search('flag', { include: ['people'] })).toEqual([])
+  expect(emojiIndex.search('flag', {include: ['people']})).toEqual([])
 })
 
 test('can search for thinking_face', () => {
@@ -38,4 +38,14 @@ test('can search for woman-facepalming', () => {
   expect(emojiIndex.search('woman-facep').map((x) => x.id)).toEqual([
     'woman-facepalming',
   ])
+})
+
+test('emojiIndex exports emojis', () => {
+  const emojis = emojiIndex.emojis
+  expect(emojis['thinking_face'].native).toEqual('\ud83e\udd14')
+})
+
+test('emojiIndex exports emoticons', () => {
+  const emoticons = emojiIndex.emoticons
+  expect(emoticons[':)']).toEqual('slightly_smiling_face')
 })

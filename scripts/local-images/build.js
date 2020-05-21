@@ -3,15 +3,15 @@ var fs = require('fs'),
   inflection = require('inflection'),
   mkdirp = require('mkdirp')
 
-var { compress } = require('../../src/utils/data')
+var {compress} = require('../../src/utils/data')
 
-var sets = ['apple', 'facebook', 'google', 'messenger', 'twitter']
+var sets = ['apple', 'facebook', 'google', 'twitter']
 
 module.exports = (options) => {
   delete require.cache[require.resolve('emoji-datasource')]
   var emojiData = require('emoji-datasource')
 
-  var data = { compressed: true, emojis: {} }
+  var data = {compressed: true, emojis: {}}
 
   emojiData.sort((a, b) => {
     var aTest = a.sort_order || a.short_name,

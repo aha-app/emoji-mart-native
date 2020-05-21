@@ -12,10 +12,16 @@ import NimbleEmoji from './emoji/nimble-emoji'
 const styles = StyleSheet.create({
   anchors: {
     borderTopWidth: 1,
-    borderTopColor: '#f6f7f8',
-    backgroundColor: '#e4e7e9',
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  anchorsLight: {
+    borderTopColor: '#f6f7f8',
+    backgroundColor: '#e4e7e9',
+  },
+  anchorsDark: {
+    borderTopColor: '#090807',
+    backgroundColor: '#1b1816',
   },
   anchor: {
     flex: 1,
@@ -38,18 +44,6 @@ const styles = StyleSheet.create({
 })
 
 export default class Anchors extends React.PureComponent {
-  static propTypes = {
-    categories: PropTypes.array,
-    onAnchorPress: PropTypes.func,
-    emojiProps: PropTypes.object.isRequired,
-    categoryEmojis: PropTypes.object.isRequired,
-  }
-
-  static defaultProps = {
-    categories: [],
-    onAnchorPress: () => {},
-  }
-
   constructor(props) {
     super(props)
 
@@ -70,8 +64,8 @@ export default class Anchors extends React.PureComponent {
   }
 
   onSelectAnchor(categoryName) {
-    this.setState({ selected: categoryName }, () => {
-      const { selected } = this.state
+    this.setState({selected: categoryName}, () => {
+      const {selected} = this.state
       let contentOffset = 0
 
       if (this.clientWidth) {
@@ -86,12 +80,12 @@ export default class Anchors extends React.PureComponent {
           contentOffset = anchorOffset - scrollStart
         }
       }
-      this.scrollView.scrollTo({ x: contentOffset, animated: true })
+      this.scrollView.scrollTo({x: contentOffset, animated: true})
     })
   }
 
   handlePress(index) {
-    var { categories, onAnchorPress } = this.props
+    var {categories, onAnchorPress} = this.props
 
     onAnchorPress(categories[index], index)
   }
@@ -105,8 +99,8 @@ export default class Anchors extends React.PureComponent {
   }
 
   onAnchorLayout = (index, event) => {
-    var { categories } = this.props
-    const { x: left, width } = event.nativeEvent.layout
+    var {categories} = this.props
+    const {x: left, width} = event.nativeEvent.layout
 
     const category = categories[index]
 
@@ -115,8 +109,15 @@ export default class Anchors extends React.PureComponent {
   }
 
   render() {
-    var { categories, color, i18n, emojiProps, categoryEmojis } = this.props,
-      { selected } = this.state
+    var {
+        categories,
+        color,
+        i18n,
+        emojiProps,
+        categoryEmojis,
+        theme,
+      } = this.props,
+      {selected} = this.state
 
     return (
       <ScrollView
@@ -126,14 +127,21 @@ export default class Anchors extends React.PureComponent {
         keyboardShouldPersistTaps="handled"
         onLayout={this.onAnchorsScrollViewLayout}
       >
-        <View style={styles.anchors}>
+        <View
+          style={[
+            styles.anchors,
+            theme === 'light' ? styles.anchorsLight : styles.anchorsDark,
+          ]}
+        >
           {categories.map((category, i) => {
-            var { id, name, anchor } = category,
+            var {id, name, anchor} = category,
               isSelected = name == selected
 
             if (anchor === false) {
               return null
             }
+
+            const categoryEmojiId = id.startsWith('custom-') ? 'custom' : id
 
             return (
               <TouchableWithoutFeedback
@@ -149,17 +157,16 @@ export default class Anchors extends React.PureComponent {
                   ]}
                 >
                   <NimbleEmoji
+                    emoji={categoryEmojis[categoryEmojiId]}
                     data={this.data}
                     {...emojiProps}
-                    emoji={categoryEmojis[id]}
-                    onPress={null}
-                    onLongPress={null}
+                    onPress={this.handlePress.bind(this, i)}
                   />
                   <View
                     style={[
                       styles.anchorBar,
                       isSelected ? styles.anchorBarSelected : null,
-                      { backgroundColor: color },
+                      {backgroundColor: color},
                     ]}
                   />
                 </View>
@@ -170,4 +177,18 @@ export default class Anchors extends React.PureComponent {
       </ScrollView>
     )
   }
+}
+
+Anchors.propTypes /* remove-proptypes */ = {
+  categories: PropTypes.array,
+  onAnchorPress: PropTypes.func,
+  emojiProps: PropTypes.object.isRequired,
+  categoryEmojis: PropTypes.object.isRequired,
+  theme: PropTypes.oneOf(['light', 'dark']),
+}
+
+Anchors.defaultProps = {
+  categories: [],
+  onAnchorPress: () => {},
+  theme: 'light',
 }

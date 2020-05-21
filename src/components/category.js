@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 
 import frequently from '../utils/frequently'
-import { getData, getSanitizedData, chunk } from '../utils'
+import {getData, getSanitizedData, chunk} from '../utils'
 
 import NimbleEmoji from './emoji/nimble-emoji'
 import NotFound from './not-found'
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
 })
 
 export default class Category extends React.Component {
-  static propTypes = {
+  static propTypes /* remove-proptypes */ = {
     emojis: PropTypes.array,
     hasStickyPosition: PropTypes.bool,
     name: PropTypes.string.isRequired,
@@ -34,11 +34,13 @@ export default class Category extends React.Component {
     recent: PropTypes.arrayOf(PropTypes.string),
     notFound: PropTypes.func,
     notFoundEmoji: PropTypes.string.isRequired,
+    theme: PropTypes.oneOf(['light', 'dark']),
   }
 
   static defaultProps = {
     emojis: [],
     hasStickyPosition: true,
+    theme: 'light',
   }
 
   constructor(props) {
@@ -77,7 +79,7 @@ export default class Category extends React.Component {
         emojis,
         emojiProps,
       } = this.props,
-      { skin, size, set } = emojiProps,
+      {skin, size, set} = emojiProps,
       {
         perLine: nextPerLine,
         native: nextNative,
@@ -85,7 +87,7 @@ export default class Category extends React.Component {
         emojis: nextEmojis,
         emojiProps: nextEmojiProps,
       } = nextProps,
-      { skin: nextSkin, size: nextSize, set: nextSet } = nextEmojiProps,
+      {skin: nextSkin, size: nextSize, set: nextSet} = nextEmojiProps,
       shouldUpdate = false
 
     if (name == 'Recent' && perLine != nextPerLine) {
@@ -125,7 +127,7 @@ export default class Category extends React.Component {
       typeof this.left === 'number' &&
       scrollLeft % this.width === 0
     ) {
-      let { pagesToEagerLoad } = this.props
+      let {pagesToEagerLoad} = this.props
       for (let index in this.pages) {
         const page = parseInt(index) + 1
         const pageWidth = this.maxMargin[`page-${index}`] || 0
@@ -158,10 +160,10 @@ export default class Category extends React.Component {
   }
 
   getEmojis() {
-    var { name, emojis, recent, perLine, emojiProps } = this.props
+    var {name, emojis, recent, perLine, emojiProps} = this.props
 
     if (name == 'Recent') {
-      let { custom } = this.props
+      let {custom} = this.props
       let frequentlyUsed = recent || frequently.get(perLine)
 
       if (frequentlyUsed.length) {
@@ -196,7 +198,7 @@ export default class Category extends React.Component {
       return
     }
 
-    this.setState({ visible })
+    this.setState({visible})
   }
 
   setPagesRef(index, c) {
@@ -208,7 +210,7 @@ export default class Category extends React.Component {
   }
 
   onLayout = (index, event) => {
-    const { x: left, width } = event.nativeEvent.layout
+    const {x: left, width} = event.nativeEvent.layout
 
     if (index === 0) {
       this.left = left
@@ -220,7 +222,7 @@ export default class Category extends React.Component {
   }
 
   _getSanitizedData = (props) => {
-    const { emoji, skin, set } = props
+    const {emoji, skin, set} = props
     return getSanitizedData(emoji, skin, set, this.data)
   }
 
@@ -236,11 +238,12 @@ export default class Category extends React.Component {
         pagesToEagerLoad,
         notFound,
         notFoundEmoji,
+        theme,
       } = this.props,
       emojis = this.getEmojis(),
-      { visible } = this.state
+      {visible} = this.state
 
-    const { size: emojiSize, margin: emojiMargin } = emojiProps
+    const {size: emojiSize, margin: emojiMargin} = emojiProps
 
     const emojiSizing = emojiSize + emojiMargin
     // Wanted to use PixelRatio.roundToNearestPixel() here to accomodate
@@ -313,6 +316,7 @@ export default class Category extends React.Component {
               notFoundEmoji={notFoundEmoji}
               data={this.data}
               emojiProps={emojiProps}
+              theme={theme}
             />
           ),
         ]

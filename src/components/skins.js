@@ -1,17 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { StyleSheet, View, TouchableWithoutFeedback } from 'react-native'
+import {StyleSheet, View, TouchableWithoutFeedback} from 'react-native'
 
 const styles = StyleSheet.create({
   skinSwatches: {
     paddingTop: 2,
     paddingBottom: 2,
     borderWidth: 1,
-    borderColor: '#d9d9d9',
     borderRadius: 14,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  skinSwatchesLight: {
+    borderColor: '#d9d9d9',
+  },
+  skinSwatchesDark: {
+    borderColor: '#3f3f3f',
   },
   skinSwatch: {
     width: 0,
@@ -68,12 +73,12 @@ export default class Skins extends React.PureComponent {
   }
 
   handlePress(skin) {
-    var { onChange } = this.props
+    var {onChange} = this.props
 
     if (!this.state.opened) {
-      this.setState({ opened: true })
+      this.setState({opened: true})
     } else {
-      this.setState({ opened: false })
+      this.setState({opened: false})
       if (skin != this.props.skin) {
         onChange(skin)
       }
@@ -81,8 +86,8 @@ export default class Skins extends React.PureComponent {
   }
 
   render() {
-    const { skin } = this.props
-    const { opened } = this.state
+    const {skin, theme} = this.props
+    const {opened} = this.state
 
     const skinToneNodes = []
 
@@ -113,15 +118,28 @@ export default class Skins extends React.PureComponent {
       )
     }
 
-    return <View style={styles.skinSwatches}>{skinToneNodes}</View>
+    return (
+      <View
+        style={[
+          styles.skinSwatches,
+          theme === 'light'
+            ? styles.skinSwatchesLight
+            : styles.skinSwatchesDark,
+        ]}
+      >
+        {skinToneNodes}
+      </View>
+    )
   }
 }
 
-Skins.propTypes = {
+Skins.propTypes /* remove-proptypes */ = {
   onChange: PropTypes.func,
   skin: PropTypes.number.isRequired,
+  theme: PropTypes.oneOf(['light', 'dark']),
 }
 
 Skins.defaultProps = {
   onChange: () => {},
+  theme: 'light',
 }

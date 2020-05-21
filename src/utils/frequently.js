@@ -29,7 +29,7 @@ function init() {
 
 function add(emoji) {
   if (!initialized) init()
-  var { id } = emoji
+  var {id} = emoji
 
   frequently || (frequently = defaults)
   frequently[id] || (frequently[id] = 0)
@@ -78,4 +78,4 @@ function get(perLine) {
   return sliced
 }
 
-export default { add, get }
+export default {add, get}

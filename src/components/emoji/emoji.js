@@ -3,7 +3,8 @@ import React from 'react'
 import data from '../../../data/all.json'
 import NimbleEmoji from './nimble-emoji'
 
-import { EmojiPropTypes, EmojiDefaultProps } from '../../utils/shared-props'
+import {EmojiPropTypes} from '../../utils/shared-props'
+import {EmojiDefaultProps} from '../../utils/shared-default-props'
 
 // TODO: Use functional components?
 // const Emoji = (props) => {
@@ -17,11 +18,11 @@ import { EmojiPropTypes, EmojiDefaultProps } from '../../utils/shared-props'
 // }
 
 export default class Emoji extends React.PureComponent {
-  static propTypes = EmojiPropTypes
-  static defaultProps = { ...EmojiDefaultProps, data }
+  static propTypes /* remove-proptypes */ = EmojiPropTypes
+  static defaultProps = {...EmojiDefaultProps, data}
 
   render() {
-    for (const k in Emoji.defaultProps) {
+    for (let k in Emoji.defaultProps) {
       if (this.props[k] === undefined && Emoji.defaultProps[k] != undefined) {
         this.props[k] = Emoji.defaultProps[k]
       }

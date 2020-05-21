@@ -1,5 +1,5 @@
-import { getData, getSanitizedData, intersect } from '../'
-import { uncompress } from '../data'
+import {getData, getSanitizedData, intersect} from '../'
+import {uncompress} from '../data'
 import store from '../store'
 
 export default class NimbleEmojiIndex {
@@ -22,7 +22,7 @@ export default class NimbleEmojiIndex {
   buildIndex() {
     for (let emoji in this.data.emojis) {
       let emojiData = this.data.emojis[emoji],
-        { short_names, emoticons, skin_variations } = emojiData,
+        {short_names, emoticons, skin_variations} = emojiData,
         id = short_names[0]
 
       if (emoticons) {
@@ -40,7 +40,7 @@ export default class NimbleEmojiIndex {
         this.emojis[id] = {}
         for (let skinTone = 1; skinTone <= 6; skinTone++) {
           this.emojis[id][skinTone] = getSanitizedData(
-            { id, skin: skinTone },
+            {id, skin: skinTone},
             skinTone,
             this.set,
             this.data,
@@ -81,7 +81,7 @@ export default class NimbleEmojiIndex {
 
   search(
     value,
-    { emojisToShowFilter, maxResults, include, exclude, custom = [] } = {},
+    {emojisToShowFilter, maxResults, include, exclude, custom = []} = {},
   ) {
     if (this.customEmojisList != custom)
       this.addCustomToPool(custom, this.originalPool)
@@ -158,7 +158,7 @@ export default class NimbleEmojiIndex {
 
               for (let id in aPool) {
                 let emoji = aPool[id],
-                  { search } = emoji,
+                  {search} = emoji,
                   sub = value.substr(0, length),
                   subIndex = search.indexOf(sub)
 
